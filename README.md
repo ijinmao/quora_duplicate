@@ -26,7 +26,7 @@ This project includes 4 RNN models mentioned in the [blog](https://engineering.q
 
 `layers.py` - other layers, word embedding layers, context layer, etc.
 
-I also implement BiMPM [4] model, however the matching operations are very complicated which causes a very slow training time. You could find the codes from [here](https://github.com/ijinmao/BiMPM_keras).
+I also implement BiMPM [4] model, however the matching operations are very complicated which result in a very slow training time. You could find the codes from [here](https://github.com/ijinmao/BiMPM_keras).
 
 ## Requirements
 
