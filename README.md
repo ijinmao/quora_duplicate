@@ -18,7 +18,7 @@ This project includes 4 RNN models mentioned in the [blog](https://engineering.q
 
 `compare_aggregate.py` - implements another attention-based approach from [3].
 
-`train_model.py` - train and test BiMPM model.
+`train_model.py` - train and test BiMPM model. You could change `model_name` in `main()` to train different model.
 
 `data_util.py` - data processing.
 
@@ -27,6 +27,12 @@ This project includes 4 RNN models mentioned in the [blog](https://engineering.q
 `layers.py` - other layers, word embedding layers, context layer, etc.
 
 I also implement BiMPM [4] model, however the matching operations are very complicated which result in a very slow training time. You could find the codes from [here](https://github.com/ijinmao/BiMPM_keras).
+
+
+
+
+
+If you find any bugs, please create an issue, thanks.
 
 ## Requirements
 
