@@ -1,5 +1,5 @@
 # quora_duplicate
-Implementation of semantic question matching with deep learning mentioned in the blog of Quora.
+Implementation of semantic question matching with deep learning approaches mentioned in the blog of Quora.
 
 ## Description
 
@@ -27,10 +27,6 @@ This project includes 4 RNN models mentioned in the [blog](https://engineering.q
 `layers.py` - other layers, word embedding layers, context layer, etc.
 
 I also implement BiMPM [4] model, however the matching operations are very complicated which result in a very slow training time. You could find the codes from [here](https://github.com/ijinmao/BiMPM_keras).
-
-
-
-
 
 If you find any bugs, please create an issue, thanks.
 

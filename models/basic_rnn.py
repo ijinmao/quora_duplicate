@@ -10,7 +10,7 @@ from keras.models import Model
 from config import (
     BasicRnnConfig, TrainConfig
 )
-from layers import (
+from models.layers import (
     WordRepresLayer, CharRepresLayer, ContextLayer,
     PredictLayer
 )

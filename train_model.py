@@ -1,11 +1,11 @@
 import numpy as np
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from sklearn.model_selection import KFold
-from basic_rnn import build_model as build_basic_rnn
-from res_distance import build_model as build_distance
-from decomposable_attention import build_model as build_attention
-from bimpm import build_model as build_bimpm
-from compare_aggregate import build_model as build_compare_aggre
+from models.basic_rnn import build_model as build_basic_rnn
+from models.res_distance import build_model as build_distance
+from models.decomposable_attention import build_model as build_attention
+from models.bimpm import build_model as build_bimpm
+from models.compare_aggregate import build_model as build_compare_aggre
 from config import (
     DirConfig, TrainConfig, TestConfig, BasicRnnConfig,
     AttentionConfig, CompareAggreConfig, ResDistanceConfig

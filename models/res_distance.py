@@ -1,30 +1,54 @@
-# -*- coding: utf-8 -*-
-"""Model graph of Decomposable Attention.
-
-References:
-    A Decomposable Attention Model for Natural Language Inference
-"""
-import keras.backend as K
+import numpy as np
+from keras.layers.core import Lambda
 from keras.layers import Input
-from keras.models import Model
 from keras.layers.merge import concatenate
-from config import AttentionConfig, TrainConfig
-from layers import (
-    WordRepresLayer, CharRepresLayer, ContextLayer,
-    AttentionLayer, NNCompareLayer, PredictLayer
+from keras.models import Model
+import keras.backend as K
+from config import (
+    ResDistanceConfig, TrainConfig
 )
+from models.layers import (
+    WordRepresLayer, CharRepresLayer, ContextLayer,
+    PredictLayer
+)
+
+np.random.seed(ResDistanceConfig.SEED)
+
+
+def distance_layer(x1, x2):
+    """Distance and angle of two inputs.
+
+    Compute the concatenation of element-wise subtraction and
+    multiplication of two inputs.
+
+    """
+    def _distance(args):
+        x1 = args[0]
+        x2 = args[1]
+        x = K.abs(x1 - x2)
+        return x
+
+    def _multiply(args):
+        x1 = args[0]
+        x2 = args[1]
+        return x1 * x2
+
+    distance = Lambda(_distance, output_shape=(K.int_shape(x1)[-1],))([x1, x2])
+    multiply = Lambda(_multiply, output_shape=(K.int_shape(x1)[-1],))([x1, x2])
+    return concatenate([distance, multiply])
 
 
 def build_model(embedding_matrix, word_index, char_index):
-    print('--- Building model...')
+    print('--- Building modle...')
+
     # Params
     nb_words = min(TrainConfig.MAX_NB_WORDS, len(word_index)) + 1
     sequence_length = TrainConfig.MAX_SEQUENCE_LENGTH
     word_embedding_dim = TrainConfig.WORD_EMBEDDING_DIM
-    rnn_unit = AttentionConfig.RNN_UNIT
-    dropout = AttentionConfig.DROP_RATE
-    context_rnn_dim = AttentionConfig.CONTEXT_LSTM_DIM
-    dense_dim = AttentionConfig.DENSE_DIM
+    rnn_unit = ResDistanceConfig.RNN_UNIT
+    dropout = ResDistanceConfig.DROP_RATE
+    context_rnn_dim = ResDistanceConfig.CONTEXT_LSTM_DIM
+    dense_dim = ResDistanceConfig.DENSE_DIM
     if TrainConfig.USE_CHAR:
         nb_chars = min(TrainConfig.MAX_NB_CHARS, len(char_index)) + 1
         char_embedding_dim = TrainConfig.CHAR_EMBEDDING_DIM
@@ -61,35 +85,17 @@ def build_model(embedding_matrix, word_index, char_index):
     context_layer = ContextLayer(
         context_rnn_dim, rnn_unit=rnn_unit, dropout=dropout,
         input_shape=(sequence_length, K.int_shape(sequence1)[-1],),
-        return_sequences=True)
+        return_sequences=False)
     context1 = context_layer(sequence1)
     context2 = context_layer(sequence2)
 
-    # Build attention layer, (batch_size, timesteps, dense_dim)
-    att_layer = AttentionLayer(dense_dim,
-                               sequence_length=sequence_length,
-                               input_dim=K.int_shape(context1)[-1],
-                               dropout=dropout)
-    # attention1, (batch_size, timesteps1, dim)
-    # attention2, (batch_size, timesteps2, dim)
-    attention1, attention2 = att_layer(context1, context2)
-
-    # # Build compare layer
-    aggregation1 = concatenate([context1, attention1])
-    aggregation2 = concatenate([context2, attention2])
-    compare_layer = NNCompareLayer(dense_dim,
-                                   sequence_length=sequence_length,
-                                   input_dim=K.int_shape(aggregation1)[-1],
-                                   dropout=dropout)
-    compare1 = compare_layer(aggregation1)
-    compare2 = compare_layer(aggregation2)
-
-    final_repres = concatenate([compare1, compare2])
+    # Build matching layer
+    distance_vector = distance_layer(context1, context2)
 
     # Build predition layer
     pred = PredictLayer(dense_dim,
-                        input_dim=K.int_shape(final_repres)[-1],
-                        dropout=dropout)(final_repres)
+                        input_dim=K.int_shape(distance_vector)[-1],
+                        dropout=dropout)(distance_vector)
 
     # Build model
     if TrainConfig.USE_CHAR:
@@ -98,6 +104,7 @@ def build_model(embedding_matrix, word_index, char_index):
         inputs = (w1, w2)
     model = Model(inputs=inputs,
                   outputs=pred)
+
     # Compile model
     model.compile(loss='binary_crossentropy',
                   optimizer='adam',

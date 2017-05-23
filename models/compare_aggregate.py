@@ -11,7 +11,7 @@ from keras.models import Model
 from config import (
     TrainConfig, CompareAggreConfig
 )
-from layers import (
+from models.layers import (
     WordRepresLayer, CharRepresLayer, ContextLayer,
     AttentionLayer, PredictLayer, CNNAggregationLayer,
     SubMultCompareLayer
