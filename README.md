@@ -10,21 +10,21 @@ This project includes 4 RNN models mentioned in the [blog](https://engineering.q
 - Third use computational operations (simple concatenate or attend mechanisms or other ops) to combine several timesteps context vectors into a single vector. This step differentiate the 4 models in this project.
 - At last use dense feed forward neural networks for the final classification.
 
-`basic_rnn.py` - implements basic RNN, the first approach in quora blog.
+`models/basic_rnn.py` - implements basic RNN, the first approach in quora blog.
 
-`res_distance.py` - implements the second approach in quora blog.
+`models/res_distance.py` - implements the second approach in quora blog.
 
-`decomposable_attention.py` - implements an attention-based approach from [2], the third approach in quora blog 
+`models/decomposable_attention.py` - implements an attention-based approach from [2], the third approach in quora blog 
 
-`compare_aggregate.py` - implements another attention-based approach from [3].
+`models/compare_aggregate.py` - implements another attention-based approach from [3].
+
+`models/layers.py` - other layers, word embedding layers, context layer, etc.
 
 `train_model.py` - train and test BiMPM model. You could change `model_name` in `main()` to train different model.
 
 `data_util.py` - data processing.
 
 `config.py` - hyper-parameters.
-
-`layers.py` - other layers, word embedding layers, context layer, etc.
 
 I also implement BiMPM [4] model, however the matching operations are very complicated which result in a very slow training time. You could find the codes from [here](https://github.com/ijinmao/BiMPM_keras).
 
