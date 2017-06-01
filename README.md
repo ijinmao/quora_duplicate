@@ -20,7 +20,7 @@ This project includes 4 RNN models mentioned in the [blog](https://engineering.q
 
 `models/layers.py` - other layers, word embedding layers, context layer, etc.
 
-`train_model.py` - train and test BiMPM model. You could change `model_name` in `main()` to train different model.
+`train_model.py` - train and test models. You could change `model_name` in `main()` to train different model.
 
 `data_util.py` - data processing.
 
